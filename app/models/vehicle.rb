@@ -33,11 +33,27 @@ class Vehicle < ApplicationRecord
       
     if VEHICLE_FIELDS.include?(type)
       where_operation = "#{type} #{OPERATIONS_BY_FIELD[type.to_sym]} ?"
-      Vehicle.where(where_operation, "#{criteria}")
+      results = Vehicle.where(where_operation, "#{criteria}")
     else
-      Vehicle
+      results = Vehicle
          .includes(vehicle_model: [:vehicle_brand])
          .where("#{type}": { name: "#{criteria}" })
     end
+
+    results.map do |result|
+      {
+        id: result.id,
+        model_name: result.vehicle_model&.name,
+        brand_name: result.vehicle_brand&.name,
+        year: result.year,
+        mileage: result.mileage,
+        price: result.price
+      }
+    end
+
+  end
+
+  def vehicle_brand
+    self.vehicle_model&.vehicle_brand
   end
 end
