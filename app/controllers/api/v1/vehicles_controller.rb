@@ -1,7 +1,6 @@
 class Api::V1::VehiclesController < ApplicationController
   def create
     begin
-      debugger
       vehicle = Vehicle.create_vehicle(**vehicle_params)
       if vehicle
         render json: { message: 'vehicle created', vehicle: vehicle }, status: :ok
